@@ -45,15 +45,8 @@ async function start(fields, cozyParameters) {
   log('info', 'Parsing list of documents')
   const documents = await parseDocuments($)
 
-  // Here we use the saveBills function even if what we fetch are not bills,
-  // but this is the most common case in connectors
   log('info', 'Saving data to Cozy')
-  await this.saveBills(documents, fields, {
-    // This is a bank identifier which will be used to link bills to bank operations. These
-    // identifiers should be at least a word found in the title of a bank operation related to this
-    // bill. It is not case sensitive.
-    identifiers: ['eau du bassin nnais']
-  })
+  await this.saveFiles(documents, fields)
 }
 
 // This shows authentication using the [signin function](https://github.com/konnectors/libs/blob/master/packages/cozy-konnector-libs/docs/api.md#module_signin)
@@ -92,8 +85,8 @@ async function authenticate(username, password) {
 }
 
 // The goal of this function is to parse a HTML page wrapped by a cheerio instance
-// and return an array of JS objects which will be saved to the cozy by saveBills
-// (https://github.com/konnectors/libs/blob/master/packages/cozy-konnector-libs/docs/api.md#savebills)
+// and return an array of JS objects which will be saved to the cozy by saveFiles
+// (https://github.com/konnectors/libs/blob/master/packages/cozy-konnector-libs/docs/api.md#savefiles)
 function parseDocuments($) {
   // You can find documentation about the scrape function here:
   // https://github.com/konnectors/libs/blob/master/packages/cozy-konnector-libs/docs/api.md#scrape
@@ -108,10 +101,10 @@ function parseDocuments($) {
       title: {
         sel: 'td:nth-child(2)'
       },
-      amount: {
-        sel: 'td:nth-child(3)',
-        parse: amount => parseFloat(amount)
-      },
+      // amount: {
+      //   sel: 'td:nth-child(3)',
+      //   parse: amount => parseFloat(amount)
+      // },
       fileurl: {
         sel: 'a',
         attr: 'href',
@@ -122,7 +115,7 @@ function parseDocuments($) {
   )
   return docs.map(doc => ({
     ...doc,
-    currency: 'EUR',
+    // currency: 'EUR',
     filename: `${utils.formatDate(doc.date)}_Facture_${doc.title}.pdf`,
     vendor: VENDOR
   }))
