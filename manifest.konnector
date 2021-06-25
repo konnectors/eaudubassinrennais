@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Eau du bassin Rennais",
   "type": "konnector",
   "language": "node",
@@ -8,7 +8,9 @@
   "source": "git@github.com:konnectors/eaudubassinrennais.git",
   "editor": "Cozy",
   "vendor_link": "https://www.eaudubassinrennais.fr/",
-  "categories": ["energy"],
+  "categories": [
+    "energy"
+  ],
   "fields": {
     "login": {
       "type": "text"
@@ -17,18 +19,16 @@
       "type": "password"
     }
   },
-  "folders": [{"defaultDir": "$administrative/$konnector/$account"}],
+  "folders": [
+    {
+      "defaultDir": "$administrative/$konnector/$account"
+    }
+  ],
   "data_types": [
     "bill"
   ],
   "screenshots": [],
   "permissions": {
-    "bank operations": {
-      "type": "io.cozy.bank.operations"
-    },
-    "bills": {
-      "type": "io.cozy.bills"
-    },
     "files": {
       "type": "io.cozy.files"
     },
@@ -40,18 +40,15 @@
     "name": "Sylvain Menu",
     "url": "https://github.com/35niavlys"
   },
-  "langs": ["fr", "en"],
+  "langs": [
+    "fr",
+    "en"
+  ],
   "locales": {
     "fr": {
-      "short_description": "Récupère la liste de des factures",
-      "long_description": "Récupère la liste des factures sur le site https://www.eaudubassinrennais.fr/",
+      "short_description": "Récupère les factures annuelles",
+      "long_description": "Récupère les factures annuelles sur le site https://www.eaudubassinrennais.fr/",
       "permissions": {
-        "bank operations": {
-          "description": "Utilisé pour relier les factures à des operations bancaires"
-        },
-        "bills": {
-          "description": "Utilisé pour sauver les données des factures"
-        },
         "files": {
           "description": "Utilisé pour sauvegarder les factures"
         },
@@ -61,15 +58,9 @@
       }
     },
     "en": {
-      "short_description": "Fetch a list of invoices",
-      "long_description": "Fetch a list of invoices from the website https://www.eaudubassinrennais.fr/",
+      "short_description": "Fetch annual invoices",
+      "long_description": "Fetch annual invoices from the website https://www.eaudubassinrennais.fr/",
       "permissions": {
-        "bank operations": {
-          "description": "Required to link bank operations to bills"
-        },
-        "bills": {
-          "description": "Required to save the bills data"
-        },
         "files": {
           "description": "Required to save the bills"
         },
