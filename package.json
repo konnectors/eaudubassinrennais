@@ -1,6 +1,6 @@
 {
   "name": "cozy-konnector-eaudubassinrennais",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "repository": {
     "type": "git",
@@ -41,7 +41,7 @@
     "blueimp-md5": "^2.18.0"
   },
   "devDependencies": {
-    "cozy-jobs-cli": "^1.16.1",
+    "cozy-jobs-cli": "1.16.2",
     "cozy-konnector-build": "1.2.1"
   }
 }
