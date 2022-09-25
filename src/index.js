@@ -2,26 +2,8 @@ process.env.SENTRY_DSN =
   process.env.SENTRY_DSN ||
   'https://ef2c055ac3c646d5850d3fa15203f997@sentry.cozycloud.cc/150'
 
-const {
-  BaseKonnector,
-  requestFactory,
-  scrape,
-  log,
-  utils
-} = require('cozy-konnector-libs')
+const { BaseKonnector, scrape, log, utils } = require('cozy-konnector-libs')
 const md5 = require('md5')
-const request = requestFactory({
-  // The debug mode shows all the details about HTTP requests and responses. Very useful for
-  // debugging but very verbose. This is why it is commented out by default
-  // debug: true,
-  // Activates [cheerio](https://cheerio.js.org/) parsing on each page
-  cheerio: true,
-  // If cheerio is activated do not forget to deactivate json parsing (which is activated by
-  // default in cozy-konnector-libs
-  json: false,
-  // This allows request-promise to keep cookies between requests
-  jar: true
-})
 
 const VENDOR = 'Eau du Bassin Rennais'
 const baseUrl = 'https://monespace.eaudubassinrennais.fr'
@@ -36,12 +18,8 @@ module.exports = new BaseKonnector(start)
 async function start(fields, cozyParameters) {
   log('info', 'Authenticating ...')
   if (cozyParameters) log('debug', 'Found COZY_PARAMETERS')
-  await authenticate.bind(this)(fields.login, fields.password)
-  log('info', 'Successfully logged in')
-  // The BaseKonnector instance expects a Promise as return of the function
-  log('info', 'Fetching the list of documents')
-  const $ = await request(`${baseUrl}/wp/displayBills.action`)
-  // cheerio (https://cheerio.js.org/) uses the same api as jQuery (http://jquery.com/)
+  const $ = await authenticate.bind(this)(fields.login, fields.password)
+  log('info', 'Successfully logged in and got list of documents')
   log('info', 'Parsing list of documents')
   const documents = await parseDocuments($)
 
@@ -52,32 +30,20 @@ async function start(fields, cozyParameters) {
 // This shows authentication using the [signin function](https://github.com/konnectors/libs/blob/master/packages/cozy-konnector-libs/docs/api.md#module_signin)
 // even if this in another domain here, but it works as an example
 async function authenticate(username, password) {
-  const $ = await request(`${baseUrl}/wp/displayBills.action`, {
-    resolveWithFullResponse: true
-  })
-
   return this.signin({
-    url: baseUrl,
+    url: `${baseUrl}/wp/displayBills.action`,
     formSelector: '#form',
     formData: {
       j_username: username,
       password: '',
       j_password: md5(password)
     },
-    headers: {
-      Cookie: $.headers['set-cookie'][0]
-    },
     // the validate function will check if
     validate: (statusCode, $) => {
-      if ($(`a[href='/wp/logout.external']`).length === 1) {
+      if ($(`table[id='billTable']`).length === 1) {
         return true
       } else {
-        log(
-          'error',
-          $('.alertmsg p')
-            .text()
-            .trim()
-        )
+        log('error', $('.alertmsg p').text().trim())
         return false
       }
     }
